@@ -61,12 +61,12 @@ TRUE_POSITIVES: list[tuple[str, str]] = [
     # 7  — Slack Token
     (
         "slack-token",
-        "xoxb-123456789012-1234567890123-abc123def456ghi789jkl012mno",
+        "xoxb-0000000000000-0000000000000-FAKEslackTOKENexample123",
     ),
     # 8  — Stripe Live Key
     (
         "stripe-live-key",
-        "sk_live_abc123def456ghi789jkl012mno345",
+        "sk_live_FAKEstripeKEYexample123456789",
     ),
     # 9  — JWT
     (
