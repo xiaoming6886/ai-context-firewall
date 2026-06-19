@@ -1,0 +1,65 @@
+[project]
+name = "ai-context-firewall"
+version = "0.1.0"
+description = "AI Context Firewall — intercept, inspect, and sanitize AI context windows"
+requires-python = ">=3.11"
+authors = [
+    { name = "ACF Contributors", email = "acf@example.com" },
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: No Input/Output (Daemon)",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Security",
+    "Topic :: System :: Monitoring",
+]
+dependencies = [
+    "mitmproxy>=10.0",
+    "click>=8.0",
+    "pydantic>=2.0",
+    "structlog>=23.0",
+    "rich>=13.0",
+    "pyyaml>=6.0",
+]
+
+[project.scripts]
+acf = "acf.cli:main"
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "pytest-cov>=4.0",
+    "pytest-asyncio>=0.23",
+    "httpx>=0.27",
+    "ruff>=0.4",
+    "mypy>=1.8",
+]
+
+[tool.ruff]
+target-version = "py311"
+select = ["ALL"]
+per-file-ignores = {"tests/**/*" = ["S101"]}
+
+[tool.mypy]
+strict = true
+python_version = "3.11"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.coverage.run]
+source = ["src/acf"]
+branch = true
+
+[tool.coverage.report]
+fail_under = 80
+exclude_lines = [
+    "pragma: no cover",
+    "if TYPE_CHECKING:",
+    "raise NotImplementedError",
+]

@@ -1,0 +1,52 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.hypothesis/
+dist/
+*.egg-info/
+.eggs/
+*.egg
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Coverage
+htmlcov/
+.coverage
+.coverage.*
+coverage.xml
+
+# Build
+build/
+*.so
+
+# Logs
+*.log
+
+# SHIP pipeline artifacts (internal)
+REVIEW_GATE*.md
+REVIEW_FINAL.md
+PLAN.md
+PLAN.md.sig
+TASKS.md
+SHIP_STATE.md
+PLATFORM_CAPS.md
+ISSUES.md
+项目任务书.md

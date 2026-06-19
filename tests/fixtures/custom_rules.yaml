@@ -1,0 +1,30 @@
+# Sample custom rules for AI Context Firewall.
+# Used by test_rules.py to verify YAML loading, validation, and merging.
+
+- id: my-internal-secret
+  name: Internal secret marker
+  pattern: "INTERNAL_SECRET_PREFIX_.*"
+  confidence: HIGH
+  severity: CRITICAL
+  category: custom_internal
+
+- id: my-api-endpoint
+  name: Internal API endpoint
+  pattern: "https://api\\.mycorp\\.com/[A-Za-z0-9/]+"
+  confidence: MEDIUM
+  severity: WARNING
+  category: custom_url
+
+- id: openai-api-key
+  name: Overridden OpenAI key detector
+  pattern: "sk-proj-[A-Za-z0-9]{48,}"
+  confidence: HIGH
+  severity: CRITICAL
+  category: api_key
+
+- id: my-compliance-rule
+  name: Compliance pattern
+  pattern: "CLASSIFIED\\s*:?\\s*(TOP SECRET|CONFIDENTIAL)"
+  confidence: HIGH
+  severity: CRITICAL
+  category: compliance
