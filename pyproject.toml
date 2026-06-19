@@ -44,9 +44,9 @@ dev = [
 target-version = "py311"
 
 [tool.ruff.lint]
-select = ["ALL"]
+select = ["E", "F", "W", "UP", "B", "SIM", "C4", "T20", "N", "RUF"]
 per-file-ignores = {"tests/**/*" = ["S101"]}
-ignore = ["D203", "D213", "I"]
+ignore = ["D203", "D213"]
 
 [tool.mypy]
 strict = true
