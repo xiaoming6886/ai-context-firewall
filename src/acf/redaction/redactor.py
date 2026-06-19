@@ -37,7 +37,7 @@ class Redactor:
         merged: list[tuple[int, int, str]] = []
 
         for f in sorted_f:
-            if merged and f.start <= merged[-1][1]:
+            if merged and f.start < merged[-1][1]:
                 # Extend the previous merged span
                 prev_start, prev_end, prev_type = merged[-1]
                 merged[-1] = (

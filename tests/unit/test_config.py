@@ -79,7 +79,7 @@ class TestValidation:
         with pytest.raises(pydantic.ValidationError):
             AppConfig(entropy_hex_threshold=threshold)
 
-    @pytest.mark.parametrize("bad_level", ["debug", "warn", "error ", "", "TRACE"])
+    @pytest.mark.parametrize("bad_level", ["verbose", "warn", "error ", "", "TRACE"])
     def test_invalid_log_level_raises(self, bad_level: str) -> None:
         with pytest.raises(pydantic.ValidationError):
             AppConfig(log_level=bad_level)

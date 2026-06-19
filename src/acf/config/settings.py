@@ -102,7 +102,7 @@ class AppConfig(BaseSettings):
     @property
     def resolved_log_dir(self) -> Path:
         """Return ``log_dir`` with ``~`` expanded to the user's home."""
-        return Path(self.log_dir).expanduser().resolve()
+        return Path(self.log_dir).expanduser()
 
     @property
     def max_body_size_bytes(self) -> int:

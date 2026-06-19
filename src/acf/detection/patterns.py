@@ -130,7 +130,7 @@ PATTERNS: list[RuleDefinition] = [
         id="pem-private-key",
         name="PEM Private Key Header",
         pattern=r"-----BEGIN\s+(?:[A-Za-z]+\s+)?PRIVATE\s+KEY-----",
-        keywords=["BEGIN PRIVATE KEY"],
+        keywords=["PRIVATE KEY"],
         severity=Severity.CRITICAL,
         category="crypto",
     ),

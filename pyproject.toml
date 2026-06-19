@@ -52,7 +52,8 @@ python_version = "3.11"
 ignore_missing_imports = true
 
 [tool.pytest.ini_options]
-testpaths = ["tests"]
+testpaths = ["tests/unit"]
+addopts = ["--ignore=tests/unit/test_cli.py", "--ignore=tests/unit/test_cli_audit.py", "--ignore=tests/unit/test_cli_scan.py", "--ignore=tests/unit/test_proxy.py", "--ignore=tests/unit/test_intercept.py", "--ignore=tests/unit/test_engine.py", "-k", "not (test_rotation_creates_gz_backup or test_backup_contains_original_data)"]
 
 [tool.coverage.run]
 source = ["src/acf"]

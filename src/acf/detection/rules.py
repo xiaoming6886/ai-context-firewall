@@ -130,9 +130,10 @@ def merge_rules(
     """Merge built-in and custom rule lists, deduplicating by *id*.
 
     Custom rules **override** built-in rules that share the same id.
+    Within custom rules themselves, later entries win when ids collide.
     The resulting list orders custom rules first (preserving their
-    relative order), followed by built-in rules that were not
-    overridden.
+    relative order after dedup), followed by built-in rules that were
+    not overridden.
 
     Parameters
     ----------
@@ -146,8 +147,13 @@ def merge_rules(
     list[RuleDefinition]
         Merged, deduplicated list.
     """
-    custom_ids: set[str] = {r.id for r in custom}
-    merged: list[RuleDefinition] = list(custom)
+    # Deduplicate custom rules: later entries override earlier ones
+    seen_custom: dict[str, RuleDefinition] = {}
+    for r in custom:
+        seen_custom[r.id] = r  # later wins
+
+    custom_ids: set[str] = set(seen_custom.keys())
+    merged: list[RuleDefinition] = list(seen_custom.values())
 
     for rule in builtin:
         if rule.id not in custom_ids:

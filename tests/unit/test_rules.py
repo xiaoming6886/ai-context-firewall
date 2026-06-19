@@ -48,7 +48,7 @@ class TestBuiltinRules:
     def test_coverage_categories(self) -> None:
         """Built-in rules should cover all expected categories."""
         categories = {r.category for r in BUILTIN_RULES}
-        for expected in ("api_key", "token", "private_key", "credential"):
+        for expected in ("cloud", "vcs", "auth", "crypto", "ai", "config", "generic", "database"):
             assert expected in categories, f"Missing category: {expected}"
 
 

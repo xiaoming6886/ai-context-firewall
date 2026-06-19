@@ -80,18 +80,19 @@ class AuditLogger:
         (PLAN §6 failure mode: "Disk full → catch").
         """
         json_line = event.model_dump_json() + "\n"
-        try:
-            with open(self._log_path, "a", encoding="utf-8") as f:
-                f.write(json_line)
-                f.flush()
-                os.fsync(f.fileno())
-        except OSError as exc:
-            logging.getLogger(__name__).error(
-                "audit write failed (disk full? permissions?): %s",
-                exc,
-            )
-            return
-        self._rotate_if_needed()
+        with self._lock:
+            try:
+                with open(self._log_path, "a", encoding="utf-8") as f:
+                    f.write(json_line)
+                    f.flush()
+                    os.fsync(f.fileno())
+            except OSError as exc:
+                logging.getLogger(__name__).error(
+                    "audit write failed (disk full? permissions?): %s",
+                    exc,
+                )
+                return
+            self._rotate_if_needed()
 
     def log_pass(
         self,
@@ -203,34 +204,33 @@ class AuditLogger:
         to prevent concurrent rotation from multiple threads using the
         same AuditLogger instance.
         """
-        with self._lock:
-            if not self._log_path.exists():
-                return
-            if self._log_path.stat().st_size < self._max_file_size:
-                return
+        if not self._log_path.exists():
+            return
+        if self._log_path.stat().st_size < self._max_file_size:
+            return
 
-            # 1. Remove the oldest backup if we're at capacity.
-            oldest = self._log_path.with_suffix(f".{self._max_backup_count}.gz")
-            if oldest.exists():
-                oldest.unlink()
+        # 1. Remove the oldest backup if we're at capacity.
+        oldest = Path(str(self._log_path) + f".{self._max_backup_count}.gz")
+        if oldest.exists():
+            oldest.unlink()
 
-            # 2. Shift existing backups: .N.gz → .N+1.gz
-            for i in range(self._max_backup_count - 1, 0, -1):
-                src = self._log_path.with_suffix(f".{i}.gz")
-                if src.exists():
-                    dst = self._log_path.with_suffix(f".{i + 1}.gz")
-                    src.rename(dst)
+        # 2. Shift existing backups: .N.gz → .N+1.gz
+        for i in range(self._max_backup_count - 1, 0, -1):
+            src = Path(str(self._log_path) + f".{i}.gz")
+            if src.exists():
+                dst = Path(str(self._log_path) + f".{i + 1}.gz")
+                src.rename(dst)
 
-            # 3. Gzip-compress the current log file into .1.gz
-            backup_path = self._log_path.with_suffix(".1.gz")
-            with open(self._log_path, "rb") as f_in:
-                with gzip.open(backup_path, "wb") as f_out:
-                    f_out.write(f_in.read())
+        # 3. Gzip-compress the current log file into .1.gz
+        backup_path = Path(str(self._log_path) + ".1.gz")
+        with open(self._log_path, "rb") as f_in:
+            with gzip.open(backup_path, "wb") as f_out:
+                f_out.write(f_in.read())
 
-            # 4. Truncate the active log file (fresh empty file).
-            #    Using write_text("") on an existing file truncates it
-            #    while preserving the same inode / file identity.
-            self._log_path.write_text("", encoding="utf-8")
+        # 4. Truncate the active log file (fresh empty file).
+        #    Using write_text("") on an existing file truncates it
+        #    while preserving the same inode / file identity.
+        self._log_path.write_text("", encoding="utf-8")
 
 
 # ── helpers ────────────────────────────────────────────────────────

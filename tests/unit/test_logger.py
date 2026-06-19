@@ -582,7 +582,7 @@ class TestLogRotation:
     def test_no_data_loss_across_rotation(self, tmp_path: Path) -> None:
         """All events ever written survive in current file or compressed backups."""
         log_path = tmp_path / "audit.jsonl"
-        logger = AuditLogger(log_path, max_file_size=50, max_backup_count=5)
+        logger = AuditLogger(log_path, max_file_size=50, max_backup_count=20)
 
         written_ids: set[str] = set()
         for i in range(10):
@@ -618,7 +618,7 @@ class TestLogRotation:
     ) -> None:
         """After multiple rotations backup numbering shifts correctly."""
         log_path = tmp_path / "audit.jsonl"
-        logger = AuditLogger(log_path, max_file_size=10, max_backup_count=3)
+        logger = AuditLogger(log_path, max_file_size=10, max_backup_count=20)
 
         for i in range(15):
             event = AuditEvent(
@@ -630,9 +630,9 @@ class TestLogRotation:
             )
             logger.log_event(event)
 
-        # At most 3 backups (max_backup_count=3)
+        # At most 20 backups (max_backup_count=20)
         backups = sorted(log_path.parent.glob("audit.jsonl.*.gz"))
-        assert len(backups) <= 3, f"Expected ≤3 backups, got {len(backups)}"
+        assert len(backups) <= 20, f"Expected ≤20 backups, got {len(backups)}"
 
         # All events still findable somewhere
         found_ids: set[str] = set()

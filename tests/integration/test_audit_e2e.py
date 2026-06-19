@@ -225,11 +225,12 @@ def _send_all_requests(e2e_pipeline: dict) -> dict:
             file_path, body = next(secret_iter)
             request_seq += 1
             rid = f"req-e2e-{request_seq:03d}"
+            pipeline_kw = {k: e2e_pipeline[k] for k in ("file_filter", "engine", "redactor", "audit_logger")}
             result = _run_pipeline(
                 file_path=file_path,
                 body=body,
                 request_id=rid,
-                **e2e_pipeline,
+                **pipeline_kw,
             )
             if result.findings:
                 expected_redaction_ids.add(rid)
@@ -237,11 +238,12 @@ def _send_all_requests(e2e_pipeline: dict) -> dict:
         file_path, body = next(block_iter)
         request_seq += 1
         rid = f"req-e2e-{request_seq:03d}"
+        pipeline_kw = {k: e2e_pipeline[k] for k in ("file_filter", "engine", "redactor", "audit_logger")}
         result = _run_pipeline(
             file_path=file_path,
             body=body,
             request_id=rid,
-            **e2e_pipeline,
+            **pipeline_kw,
         )
         if result.blocked:
             expected_file_block_ids.add(rid)

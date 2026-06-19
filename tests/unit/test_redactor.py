@@ -18,7 +18,7 @@ class TestRedactor:
             Finding(
                 secret_type="openai_api_key",
                 start=14,
-                end=30,
+                end=33,
                 confidence="HIGH",
                 matched_rule="openai_key",
             )
@@ -110,16 +110,16 @@ class TestRedactor:
         """Findings that overlap are merged into a single span."""
         redactor = Redactor()
         text = "Token: abcdefghijklmnop"
-        # finding1 → [7, 15), finding2 → [10, 20) — they overlap
+        # finding1 → [7, 15), finding2 → [10, 23) — they overlap
         findings = [
             Finding(secret_type="secret", start=7, end=15,
                     confidence="HIGH", matched_rule="rule_1"),
-            Finding(secret_type="secret", start=10, end=20,
+            Finding(secret_type="secret", start=10, end=23,
                     confidence="HIGH", matched_rule="rule_2"),
         ]
         result = redactor.redact(text, findings)
 
-        # Merged span covers 7–20
+        # Merged span covers 7–23
         assert result == "Token: [REDACTED:secret]"
 
     def test_adjacent_findings_not_merged(self):
@@ -158,12 +158,12 @@ class TestRedactor:
         findings = [
             Finding(secret_type="api_token", start=8, end=15,
                     confidence="HIGH", matched_rule="rule1"),
-            Finding(secret_type="session_id", start=12, end=19,
+            Finding(secret_type="session_id", start=12, end=24,
                     confidence="MEDIUM", matched_rule="rule2"),
         ]
         result = redactor.redact(text, findings)
 
-        # Merged: 8–19, type from first finding
+        # Merged: 8–24, type from first finding
         assert result == "header: [REDACTED:api_token]"
 
     # ── Boundary conditions ────────────────────────────────────────
@@ -185,7 +185,7 @@ class TestRedactor:
         redactor = Redactor()
         text = "Some text ends with SECRET"
         findings = [
-            Finding(secret_type="secret", start=15, end=21,
+            Finding(secret_type="secret", start=20, end=26,
                     confidence="HIGH", matched_rule="rule"),
         ]
         result = redactor.redact(text, findings)

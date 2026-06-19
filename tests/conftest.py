@@ -61,7 +61,7 @@ def large_binary_file(fixtures_dir: Path) -> Path:
     return fixtures_dir / "large_binary.dat"
 
 
-@pytest.fixture(scope="session", autouse=True)
+@pytest.fixture(autouse=True)
 def _ensure_binary_fixture(fixtures_dir: Path) -> None:
     """Ensure large_binary.dat contains exactly 20 bytes of real binary data."""
     path = fixtures_dir / "large_binary.dat"
