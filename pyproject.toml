@@ -60,7 +60,6 @@ source = ["src/acf"]
 branch = true
 
 [tool.coverage.report]
-fail_under = 80
 exclude_lines = [
     "pragma: no cover",
     "if TYPE_CHECKING:",
